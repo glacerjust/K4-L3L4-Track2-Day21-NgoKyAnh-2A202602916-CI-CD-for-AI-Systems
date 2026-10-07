@@ -9,6 +9,9 @@ on:
       - 'params.yaml'
   workflow_dispatch:
 
+env:
+  MLFLOW_TRACKING_URI: "sqlite:///mlflow.db"
+
 jobs:
 
   # ---------------------------------------------------------------------------
