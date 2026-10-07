@@ -54,3 +54,11 @@ Dưới đây là số liệu trích xuất từ file báo cáo của pipeline q
 | Bước 3 (thêm `train_batch2` - 44.722 mẫu) | 0.7354 | 0.8820 |
 
 **Nhận xét:** Khi bổ sung thêm 22.361 mẫu dữ liệu mới ở Bước 3, cả hai chỉ số đánh giá đều có sự cải thiện tích cực: `f1_score` tăng từ 0.7149 lên 0.7354 (+0.0205) và `accuracy` tăng từ 0.8740 lên 0.8820 (+0.0080). Khối lượng dữ liệu gấp đôi đã giúp mô hình Gradient Boosting khái quát hóa tốt hơn các đặc trưng phân bố của đối tượng có thu nhập cao. Điều quan trọng nhất là toàn bộ quy trình Continuous Training đã vận hành hoàn toàn tự động: chỉ từ một commit cập nhật dữ liệu trên DVC, GitHub Actions đã tự động huấn luyện lại, vượt qua Quality Gate và kích hoạt cập nhật phiên bản model mới trên máy chủ AWS EC2 mà không cần bất kỳ sự can thiệp thủ công nào.
+
+---
+
+## 5. Phần Bonus Đã Thực Hiện
+
+- [x] **Bonus 2 - Điều chỉnh ngưỡng quyết định**: Sử dụng `predict_proba` quét ngưỡng xác suất từ 0.1 đến 0.9 (bước 0.05), xác định ngưỡng tối ưu nâng F1 cao hơn ngưỡng mặc định 0.5; ghi `best_threshold` và `best_f1_score` vào `report.json` và MLflow.
+- [x] **Bonus 3 - Báo cáo precision / recall tự động**: Xuất Confusion Matrix và Precision/Recall từng lớp vào `outputs/detail.txt` lưu thành CI artifact. Đối với bài toán này, sai lầm bỏ sót người thu nhập cao (False Negative - Recall thấp) tốn kém hơn việc gán nhầm người thu nhập thấp (False Positive - Precision thấp) do mục tiêu bài toán kinh doanh là tối đa hóa tỷ lệ tiếp cận tệp khách hàng tiềm năng.
+- [x] **Bonus 5 - Cảnh báo lệch lạc dữ liệu**: Kiểm tra tỷ lệ lớp dương trong tập huấn luyện (24.8%, không lệch quá 5% so với phân phối tham chiếu); ghi nhận cảnh báo và lưu `positive_class_ratio` vào `outputs/report.json`.
